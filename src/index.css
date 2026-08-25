@@ -1,0 +1,177 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-charcoal: #F8F9FA;
+    --bg-surface: #FFFFFF;
+    --bg-elevated: #F1F3F5;
+    --text-bone: #111317;
+    --text-muted: #4B5563;
+    --accent-orange: #FF5A1F;
+    --accent-amber: #D97706;
+    --accent-steel: #4A6B7C;
+    --accent-cyan: #0284C7;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #F8F9FA;
+    color: #111317;
+  }
+
+  h1, h2, h3, .font-heading {
+    font-family: 'Syne', sans-serif;
+    letter-spacing: -0.04em;
+  }
+
+  .font-technical {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .font-mono-tech {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Lenis Recommended CSS */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Bold Typography Radial Dot Matrix Backgrounds (Light Mode) */
+.bg-radial-dots {
+  background-image: radial-gradient(circle, #111317 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.bg-radial-dots-dense {
+  background-image: radial-gradient(circle, #111317 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Blueprint Grid Backgrounds (Light Mode) */
+.bg-blueprint-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(17, 19, 23, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(17, 19, 23, 0.04) 1px, transparent 1px);
+}
+
+.bg-blueprint-dense {
+  background-size: 20px 20px;
+  background-image: 
+    linear-gradient(to right, rgba(17, 19, 23, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(17, 19, 23, 0.05) 1px, transparent 1px);
+}
+
+/* Industrial Warning Stripe Motif */
+.hazard-stripe {
+  background: repeating-linear-gradient(
+    -45deg,
+    #FF5A1F,
+    #FF5A1F 10px,
+    #FFFFFF 10px,
+    #FFFFFF 20px
+  );
+}
+
+.hazard-stripe-subtle {
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 90, 31, 0.2),
+    rgba(255, 90, 31, 0.2) 8px,
+    transparent 8px,
+    transparent 16px
+  );
+}
+
+/* Reticle Corner Brackets */
+.reticle-box {
+  position: relative;
+}
+
+.reticle-box::before,
+.reticle-box::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-color: rgba(255, 90, 31, 0.6);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.reticle-box::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid;
+  border-left: 2px solid;
+}
+
+.reticle-box::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid;
+  border-right: 2px solid;
+}
+
+.reticle-box:hover::before,
+.reticle-box:hover::after {
+  border-color: #FF5A1F;
+  width: 14px;
+  height: 14px;
+}
+
+/* Film Grain Texture */
+.noise-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F3F5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 0px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FF5A1F;
+}
+
+/* Custom Reticle Cursor (hide default when active) */
+@media (hover: hover) and (pointer: fine) {
+  body.custom-cursor-active {
+    cursor: none;
+  }
+  body.custom-cursor-active a, 
+  body.custom-cursor-active button,
+  body.custom-cursor-active input,
+  body.custom-cursor-active select,
+  body.custom-cursor-active textarea {
+    cursor: none;
+  }
+}
+
