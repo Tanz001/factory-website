@@ -6,7 +6,6 @@ export const CustomCursor: React.FC = () => {
   const followerRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
-  const [coords, setCoords] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -22,7 +21,6 @@ export const CustomCursor: React.FC = () => {
 
     const onMouseMove = (e: MouseEvent) => {
       setIsVisible(true);
-      setCoords({ x: Math.round(e.clientX), y: Math.round(e.clientY) });
 
       // Immediate dot
       gsap.to(cursor, {
@@ -92,34 +90,24 @@ export const CustomCursor: React.FC = () => {
       <div
         ref={cursorRef}
         id="cursor-dot"
-        className="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#FF5A1F] shadow-[0_0_8px_#FF5A1F]"
+        className="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[var(--accent)]"
       />
 
-      {/* Industrial Reticle Follower */}
       <div
         ref={followerRef}
         id="cursor-reticle"
         className={`fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 transition-transform duration-200 flex items-center justify-center ${
           isHovering
-            ? 'scale-150 w-12 h-12 border border-[#FF5A1F] bg-[rgba(255,90,31,0.08)]'
+            ? 'scale-150 w-11 h-11 border border-[var(--accent)] bg-[rgba(20,138,128,0.1)]'
             : isClicking
-            ? 'scale-90 w-8 h-8 border border-[#FF5A1F]'
-            : 'w-9 h-9 border border-[rgba(17,19,23,0.35)]'
+            ? 'scale-90 w-8 h-8 border border-[var(--accent)]'
+            : 'w-9 h-9 border border-[rgba(9,17,26,0.3)]'
         }`}
-        style={{ borderRadius: isHovering ? '4px' : '0px' }}
       >
-        {/* Reticle Corner Marks */}
-        <div className="absolute -top-1 -left-1 w-1.5 h-1.5 border-t border-l border-[#FF5A1F]" />
-        <div className="absolute -top-1 -right-1 w-1.5 h-1.5 border-t border-r border-[#FF5A1F]" />
-        <div className="absolute -bottom-1 -left-1 w-1.5 h-1.5 border-b border-l border-[#FF5A1F]" />
-        <div className="absolute -bottom-1 -right-1 w-1.5 h-1.5 border-b border-r border-[#FF5A1F]" />
-
-        {/* Micro Coordinate HUD Badge on Hover */}
-        {isHovering && (
-          <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] font-mono font-medium text-[#FF5A1F] whitespace-nowrap tracking-wider bg-white px-1 border border-[#FF5A1F]/40 shadow-xs">
-            LOC[{coords.x},{coords.y}]
-          </span>
-        )}
+        <div className="absolute -top-1 -left-1 w-1.5 h-1.5 border-t border-l border-[var(--accent)]" />
+        <div className="absolute -top-1 -right-1 w-1.5 h-1.5 border-t border-r border-[var(--accent)]" />
+        <div className="absolute -bottom-1 -left-1 w-1.5 h-1.5 border-b border-l border-[var(--accent)]" />
+        <div className="absolute -bottom-1 -right-1 w-1.5 h-1.5 border-b border-r border-[var(--accent)]" />
       </div>
     </div>
   );

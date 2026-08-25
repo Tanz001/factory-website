@@ -1,218 +1,213 @@
-import React, { useState, useEffect, useRef } from 'react';
-import gsap from 'gsap';
+import React, { useState, useEffect } from 'react';
 import { TESTIMONIALS } from '../../data/mockData';
-import { ChevronLeft, ChevronRight, Quote, Star, MapPin, Building2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
+
+const POLAROID_CAPTIONS = ['Zero rust', 'Air-tight', 'Zero upkeep', 'Faster build'];
+
+const HIGHLIGHTS: Record<string, string[]> = {
+  'test-01': ['zero rust', 'zero chalking', '7.5°C'],
+  'test-02': ['thermal integrity is non-negotiable', 'zero thermal bridge losses'],
+  'test-03': ['dropped to zero', 'plant floor safety'],
+  'test-04': ['35% faster', 'record time'],
+};
+
+function renderQuote(quote: string, highlights: string[]) {
+  if (!highlights.length) return quote;
+
+  const pattern = new RegExp(`(${highlights.map(escapeRegExp).join('|')})`, 'gi');
+  const parts = quote.split(pattern);
+
+  return parts.map((part, i) => {
+    const isHighlight = highlights.some(
+      (h) => h.toLowerCase() === part.toLowerCase()
+    );
+    if (isHighlight) {
+      return (
+        <span
+          key={i}
+          className="relative inline whitespace-pre-wrap"
+          style={{
+            backgroundImage:
+              'linear-gradient(transparent 70%, rgba(184, 149, 108, 0.55) 70%)',
+          }}
+        >
+          {part}
+        </span>
+      );
+    }
+    return <React.Fragment key={i}>{part}</React.Fragment>;
+  });
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
 export const TestimonialsDraggable: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const sliderRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-
+  const [paused, setPaused] = useState(false);
   const total = TESTIMONIALS.length;
+  const active = TESTIMONIALS[activeIndex];
+  const caption = POLAROID_CAPTIONS[activeIndex % POLAROID_CAPTIONS.length];
+  const highlights = HIGHLIGHTS[active.id] ?? [];
 
-  const nextSlide = () => {
-    setActiveIndex((prev) => (prev + 1) % total);
-  };
+  // Stack order: active on top, then next two behind
+  const stack = [0, 1, 2].map((offset) => {
+    const idx = (activeIndex + offset) % total;
+    return { ...TESTIMONIALS[idx], stackIndex: offset };
+  });
 
-  const prevSlide = () => {
-    setActiveIndex((prev) => (prev - 1 + total) % total);
-  };
-
-  // Autoplay with pause on hover
   useEffect(() => {
-    if (isPaused) return;
-    const interval = setInterval(() => {
-      nextSlide();
-    }, 6000);
-    return () => clearInterval(interval);
-  }, [isPaused, activeIndex]);
+    if (paused) return;
+    const id = setInterval(() => {
+      setActiveIndex((p) => (p + 1) % total);
+    }, 7000);
+    return () => clearInterval(id);
+  }, [paused, total]);
 
-  // GSAP 3D Perspective Rotation Animation on active slide change
-  useEffect(() => {
-    cardsRef.current.forEach((card, idx) => {
-      if (!card) return;
-      const offset = idx - activeIndex;
-
-      if (idx === activeIndex) {
-        // Center Active Card
-        gsap.to(card, {
-          scale: 1,
-          rotateY: 0,
-          opacity: 1,
-          zIndex: 10,
-          xPercent: 0,
-          duration: 0.6,
-          ease: 'power3.out'
-        });
-      } else if (offset === 1 || (activeIndex === total - 1 && idx === 0)) {
-        // Next Card (rotated slightly inward)
-        gsap.to(card, {
-          scale: 0.88,
-          rotateY: -15,
-          opacity: 0.45,
-          zIndex: 5,
-          xPercent: 15,
-          duration: 0.6,
-          ease: 'power3.out'
-        });
-      } else if (offset === -1 || (activeIndex === 0 && idx === total - 1)) {
-        // Prev Card (rotated slightly inward)
-        gsap.to(card, {
-          scale: 0.88,
-          rotateY: 15,
-          opacity: 0.45,
-          zIndex: 5,
-          xPercent: -15,
-          duration: 0.6,
-          ease: 'power3.out'
-        });
-      } else {
-        // Hidden distant cards
-        gsap.to(card, {
-          scale: 0.75,
-          opacity: 0,
-          zIndex: 0,
-          duration: 0.6
-        });
-      }
-    });
-  }, [activeIndex]);
+  const prev = () => setActiveIndex((p) => (p - 1 + total) % total);
+  const next = () => setActiveIndex((p) => (p + 1) % total);
 
   return (
     <section
       id="testimonials"
-      className="relative w-full py-28 bg-white text-[#111317] overflow-hidden border-t border-black/10 select-none"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
+      className="relative w-full py-24 sm:py-28 lg:py-32 overflow-hidden bg-[#0A1218]"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
     >
-      {/* Background Watermark */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[140px] sm:text-[220px] font-black tracking-tighter text-black select-none pointer-events-none opacity-[0.02] leading-none uppercase z-0">
-        VALIDATION
-      </div>
+      {/* Atmosphere: dots + soft flares */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.35]"
+        style={{
+          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px)',
+          backgroundSize: '28px 28px',
+        }}
+      />
+      <div className="absolute top-[18%] left-[12%] w-40 h-40 rounded-full bg-[var(--accent)]/20 blur-[80px] pointer-events-none" />
+      <div className="absolute bottom-[20%] right-[18%] w-52 h-52 rounded-full bg-[var(--brass)]/15 blur-[90px] pointer-events-none" />
+      <div className="absolute top-[55%] left-[45%] w-24 h-24 rounded-full bg-[var(--accent)]/25 blur-[50px] pointer-events-none" />
 
-      {/* Radial Dot Pattern */}
-      <div className="absolute inset-0 bg-radial-dots opacity-[0.025] pointer-events-none" />
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-6 items-center min-h-[520px]">
+          {/* LEFT — heading + circular nav */}
+          <div className="lg:col-span-3 flex flex-col items-start">
+            <p className="font-mono-tech text-[11px] sm:text-xs uppercase tracking-[0.3em] text-[var(--accent)] mb-4">
+              Field voices
+            </p>
+            <h2 className="font-heading text-4xl sm:text-5xl lg:text-[3.4rem] font-bold uppercase text-white leading-[0.92] mb-10">
+              Satisfied
+              <br />
+              clients
+            </h2>
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-12 relative z-10">
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 pb-6 border-b border-black/10">
-          <div>
-            <div className="flex items-center gap-3 mb-3">
-              <span className="w-2 h-2 bg-[#FF5A1F]" />
-              <span className="font-mono text-xs font-bold tracking-[0.25em] text-[#FF5A1F] uppercase">
-                07 // INDUSTRIAL FIELD VALIDATION
+            <div className="flex items-center gap-3">
+              <button
+                onClick={prev}
+                className="w-12 h-12 rounded-full bg-white text-[var(--ink)] flex items-center justify-center hover:bg-[var(--accent)] hover:text-white transition-colors shadow-lg"
+                aria-label="Previous"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={next}
+                className="w-12 h-12 rounded-full bg-white text-[var(--ink)] flex items-center justify-center hover:bg-[var(--accent)] hover:text-white transition-colors shadow-lg"
+                aria-label="Next"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+
+            <p className="mt-6 font-mono-tech text-[10px] uppercase tracking-[0.25em] text-white/35">
+              {String(activeIndex + 1).padStart(2, '0')} — {String(total).padStart(2, '0')}
+            </p>
+          </div>
+
+          {/* CENTER — stacked polaroids */}
+          <div className="lg:col-span-4 flex items-center justify-center py-6 lg:py-0">
+            <div className="relative w-[240px] sm:w-[280px] h-[340px] sm:h-[390px]">
+              {stack
+                .slice()
+                .reverse()
+                .map((item) => {
+                  const i = item.stackIndex;
+                  const rotations = [ -3, 8, -10 ];
+                  const offsets = [
+                    { x: 0, y: 0 },
+                    { x: 28, y: 18 },
+                    { x: -22, y: 28 },
+                  ];
+                  const isTop = i === 0;
+
+                  return (
+                    <div
+                      key={`${item.id}-${activeIndex}-${i}`}
+                      className="absolute left-1/2 top-0 origin-center transition-all duration-500 ease-out"
+                      style={{
+                        width: '86%',
+                        zIndex: 10 - i,
+                        transform: `translateX(calc(-50% + ${offsets[i].x}px)) translateY(${offsets[i].y}px) rotate(${rotations[i]}deg) scale(${isTop ? 1 : 0.94 - i * 0.02})`,
+                        opacity: isTop ? 1 : 0.55 - i * 0.1,
+                      }}
+                    >
+                      <div
+                        className={`bg-[#F4F1EC] p-3 pb-10 shadow-[0_20px_50px_rgba(0,0,0,0.45)] ${
+                          isTop ? 'ring-1 ring-white/10' : ''
+                        }`}
+                      >
+                        <div className="relative aspect-[4/5] overflow-hidden bg-[#ddd]">
+                          <img
+                            src={item.avatar}
+                            alt={item.author}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        {isTop && (
+                          <p className="font-script text-3xl sm:text-4xl text-[#2A1F18] text-center mt-3 leading-none relative">
+                            {caption}
+                            <span className="absolute -top-1 right-[28%] w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+
+          {/* RIGHT — vertical name + quote + stars */}
+          <div className="lg:col-span-5 flex gap-5 sm:gap-7 items-start lg:items-center">
+            <div
+              className="hidden sm:flex shrink-0 items-center justify-center"
+              style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
+            >
+              <span className="font-heading text-sm sm:text-base font-bold uppercase tracking-[0.35em] text-[var(--accent)] whitespace-nowrap">
+                {active.author.replace(/^Eng\.\s*/, '')}
               </span>
             </div>
-            <h2 className="font-heading text-3xl sm:text-5xl lg:text-6xl font-black uppercase text-[#111317] tracking-tight leading-[1.0]">
-              CONTRACTOR & CLIENT VERDICT
-            </h2>
-          </div>
 
-          {/* Navigation Controls */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={prevSlide}
-              className="w-12 h-12 bg-[#F8F9FA] border border-black/10 hover:border-[#FF5A1F] text-[#111317] hover:text-[#FF5A1F] flex items-center justify-center transition-all interactive-target shadow-xs"
-              aria-label="Previous Testimonial"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <span className="font-mono text-xs font-black text-[#4B5563] px-2 uppercase tracking-widest">
-              0{activeIndex + 1} / 0{total}
-            </span>
-            <button
-              onClick={nextSlide}
-              className="w-12 h-12 bg-[#F8F9FA] border border-black/10 hover:border-[#FF5A1F] text-[#111317] hover:text-[#FF5A1F] flex items-center justify-center transition-all interactive-target shadow-xs"
-              aria-label="Next Testimonial"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
+            <div className="flex-1 min-w-0">
+              <p className="sm:hidden font-heading text-sm font-bold uppercase tracking-[0.25em] text-[var(--accent)] mb-4">
+                {active.author}
+              </p>
 
-        {/* 3D Perspective Viewport */}
-        <div
-          ref={sliderRef}
-          className="relative min-h-[380px] sm:min-h-[420px] flex items-center justify-center perspective-[1200px]"
-        >
-          {TESTIMONIALS.map((test, idx) => {
-            const isCurrent = idx === activeIndex;
-            return (
-              <div
-                key={test.id}
-                ref={(el) => (cardsRef.current[idx] = el)}
-                className={`absolute w-full max-w-3xl p-8 sm:p-10 bg-white border border-black/10 transition-shadow shadow-md cursor-pointer relative ${
-                  isCurrent ? 'border-[#FF5A1F] shadow-[0_20px_50px_rgba(0,0,0,0.1)] ring-1 ring-[#FF5A1F]/30' : ''
-                }`}
-                onClick={() => setActiveIndex(idx)}
-                style={{
-                  transformStyle: 'preserve-3d'
-                }}
+              <p
+                key={active.id}
+                className="text-white/90 text-base sm:text-lg leading-relaxed font-normal"
               >
-                <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#FF5A1F]" />
+                {renderQuote(active.quote, highlights)}
+              </p>
 
-                {/* Quotation Watermark */}
-                <Quote className="absolute top-6 right-8 w-16 h-16 text-black/5 pointer-events-none" />
-
-                {/* Rating Stars & Project Scope Tag */}
-                <div className="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-black/10 font-mono text-xs">
-                  <div className="flex items-center gap-1.5 text-[#D97706]">
-                    {[...Array(test.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-current" />
-                    ))}
-                  </div>
-                  <div className="flex items-center gap-2 text-[#FF5A1F]">
-                    <Building2 className="w-3.5 h-3.5" />
-                    <span className="font-bold uppercase tracking-wider">{test.projectScale}</span>
-                  </div>
-                </div>
-
-                {/* Main Testimonial Statement */}
-                <p className="text-base sm:text-xl font-normal text-[#111317] leading-relaxed my-6 font-mono">
-                  "{test.quote}"
-                </p>
-
-                {/* Author Credentials & Project Identification */}
-                <div className="flex items-center justify-between pt-6 border-t border-black/10 flex-wrap gap-4">
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={test.avatar}
-                      alt={test.author}
-                      className="w-12 h-12 rounded-none object-cover border-2 border-[#FF5A1F] p-0.5"
-                    />
-                    <div>
-                      <h4 className="font-heading text-base font-black uppercase text-[#111317]">
-                        {test.author}
-                      </h4>
-                      <p className="text-xs text-[#4B5563] font-mono uppercase tracking-wider font-semibold">
-                        {test.role} — <span className="text-[#111317] font-bold">{test.company}</span>
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-1.5 text-xs font-mono text-[#4B5563] uppercase tracking-wider font-semibold">
-                    <MapPin className="w-3.5 h-3.5 text-[#FF5A1F]" />
-                    <span>{test.location}</span>
-                  </div>
-                </div>
+              <div className="mt-5 text-sm text-white/45">
+                {active.role} · {active.company}
               </div>
-            );
-          })}
-        </div>
 
-        {/* Carousel Progress Indicators */}
-        <div className="flex items-center justify-center gap-2 mt-8">
-          {TESTIMONIALS.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setActiveIndex(i)}
-              className={`h-1 transition-all duration-300 ${
-                i === activeIndex ? 'w-8 bg-[#FF5A1F]' : 'w-2 bg-black/20 hover:bg-black/40'
-              }`}
-              aria-label={`Go to slide ${i + 1}`}
-            />
-          ))}
+              <div className="mt-8 inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-[var(--accent)]/90 shadow-[0_0_28px_rgba(20,138,128,0.45)]">
+                {Array.from({ length: active.rating }).map((_, i) => (
+                  <Star key={i} className="w-4 h-4 fill-white text-white" />
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Product } from '../../types';
 import { PRODUCTS } from '../../data/mockData';
-import { ArrowUpRight, Shield, Layers, Flame, Thermometer, FileText, Check, Cpu } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowUpRight } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,296 +14,234 @@ interface ProductsShowcaseProps {
 
 export const ProductsShowcase: React.FC<ProductsShowcaseProps> = ({
   onSelectProduct,
-  onOpenRFQ
+  onOpenRFQ,
 }) => {
   const sectionRef = useRef<HTMLElement>(null);
-  const headlineRef = useRef<HTMLHeadingElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(true);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const updateNavState = () => {
+    const el = trackRef.current;
+    if (!el) return;
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    setCanPrev(el.scrollLeft > 8);
+    setCanNext(el.scrollLeft < maxScroll - 8);
+
+    const cards = el.querySelectorAll('.product-slide');
+    if (!cards.length) return;
+    const center = el.scrollLeft + el.clientWidth / 2;
+    let closest = 0;
+    let closestDist = Infinity;
+    cards.forEach((card, i) => {
+      const rect = (card as HTMLElement).offsetLeft + (card as HTMLElement).offsetWidth / 2;
+      const dist = Math.abs(center - rect);
+      if (dist < closestDist) {
+        closestDist = dist;
+        closest = i;
+      }
+    });
+    setActiveIndex(closest);
+  };
+
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    updateNavState();
+    el.addEventListener('scroll', updateNavState, { passive: true });
+    window.addEventListener('resize', updateNavState);
+    return () => {
+      el.removeEventListener('scroll', updateNavState);
+      window.removeEventListener('resize', updateNavState);
+    };
+  }, []);
 
   useEffect(() => {
     const section = sectionRef.current;
-    const headline = headlineRef.current;
-    const grid = gridRef.current;
-
-    if (!section || !grid) return;
-
+    if (!section) return;
     const ctx = gsap.context(() => {
-      // Headline Reveal
-      if (headline) {
-        gsap.fromTo(
-          headline.querySelectorAll('.prod-title-word'),
-          { opacity: 0, y: 30, filter: 'blur(6px)' },
-          {
-            opacity: 1,
-            y: 0,
-            filter: 'blur(0px)',
-            duration: 0.9,
-            stagger: 0.07,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: headline,
-              start: 'top 85%'
-            }
-          }
-        );
-      }
-
-      // Stagger in unconventional product cards
-      const cards = grid.querySelectorAll('.product-card');
       gsap.fromTo(
-        cards,
-        { opacity: 0, y: 40, scale: 0.96 },
+        section.querySelectorAll('.products-header > *'),
+        { opacity: 0, y: 24 },
         {
           opacity: 1,
           y: 0,
-          scale: 1,
-          duration: 0.8,
-          stagger: 0.12,
+          duration: 0.7,
+          stagger: 0.1,
           ease: 'power2.out',
-          scrollTrigger: {
-            trigger: grid,
-            start: 'top 80%'
-          }
+          scrollTrigger: { trigger: section, start: 'top 75%' },
         }
       );
     }, section);
-
     return () => ctx.revert();
   }, []);
 
-  const featuredProduct = PRODUCTS[0];
-  const secondaryProducts = PRODUCTS.slice(1);
+  const scrollByCard = (dir: -1 | 1) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const card = el.querySelector('.product-slide') as HTMLElement | null;
+    const amount = card ? card.offsetWidth + 24 : el.clientWidth * 0.75;
+    el.scrollBy({ left: dir * amount, behavior: 'smooth' });
+  };
+
+  const scrollToIndex = (index: number) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const card = el.querySelectorAll('.product-slide')[index] as HTMLElement | undefined;
+    if (!card) return;
+    el.scrollTo({ left: card.offsetLeft - 24, behavior: 'smooth' });
+  };
 
   return (
     <section
       ref={sectionRef}
       id="products"
-      className="relative w-full py-28 bg-[#F8F9FA] text-[#111317] overflow-hidden border-t border-black/10"
+      className="relative w-full py-24 sm:py-32 bg-[var(--bg)] overflow-hidden"
     >
-      {/* Background Watermark */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[140px] sm:text-[220px] lg:text-[280px] font-black tracking-tighter text-black select-none pointer-events-none opacity-[0.02] leading-none uppercase z-0">
-        PORTFOLIO
-      </div>
+      <div className="absolute inset-0 bg-fine-grid opacity-60 pointer-events-none" />
 
-      {/* Radial Dot Pattern */}
-      <div className="absolute inset-0 bg-radial-dots opacity-[0.03] pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-6 sm:px-12 relative z-10">
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 pb-6 border-b border-black/10">
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 relative z-10">
+        <div className="products-header flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div>
-            <div className="flex items-center gap-3 mb-3">
-              <span className="w-2 h-2 bg-[#FF5A1F]" />
-              <span className="font-mono text-xs font-bold tracking-[0.25em] text-[#FF5A1F] uppercase">
-                03 // CERTIFIED PRODUCT SPECIFICATIONS
-              </span>
-            </div>
-            <h2
-              ref={headlineRef}
-              className="font-heading text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-[#111317] leading-[1.0]"
-            >
-              <span className="prod-title-word inline-block mr-3">HEAVY</span>
-              <span className="prod-title-word inline-block mr-3">INDUSTRIAL</span>
-              <span className="prod-title-word inline-block text-[#FF5A1F]">PORTFOLIO</span>
+            <p className="font-mono-tech text-[11px] uppercase tracking-[0.25em] text-[var(--accent)] mb-3">
+              Product range
+            </p>
+            <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold uppercase text-[var(--ink)] leading-[0.95]">
+              Engineered panel systems
             </h2>
+            <p className="mt-3 text-[var(--muted)] text-sm sm:text-base max-w-lg">
+              Scroll sideways to explore UPVC roofing, PIR cold storage, cladding, and doors.
+            </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <p className="text-xs font-mono text-[#4B5563] max-w-sm uppercase">
-              ENGINEERED COMPOSITES FOR CHEMICAL RESISTANCE, ZERO THERMAL BRIDGING, AND ASTM FLAME RATINGS.
-            </p>
+          <div className="flex items-center gap-3">
             <button
               onClick={onOpenRFQ}
-              className="px-5 py-2.5 bg-white border border-[#FF5A1F] text-[#FF5A1F] hover:bg-[#FF5A1F] hover:text-white font-mono text-xs font-black tracking-widest uppercase transition-all shadow-xs"
+              className="px-5 py-2.5 text-sm font-semibold text-[var(--accent)] border border-[var(--accent)] hover:bg-[var(--accent)] hover:text-white transition-colors"
             >
-              DOWNLOAD CAD SPECS
+              Download CAD specs
             </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => scrollByCard(-1)}
+                disabled={!canPrev}
+                className="w-11 h-11 flex items-center justify-center border border-[var(--line-strong)] text-[var(--ink)] hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                aria-label="Previous products"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => scrollByCard(1)}
+                disabled={!canNext}
+                className="w-11 h-11 flex items-center justify-center border border-[var(--line-strong)] text-[var(--ink)] hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                aria-label="Next products"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Unconventional Asymmetric Technical Grid */}
-        <div ref={gridRef} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* 1. Large Hero Featured Product Card (8 cols) */}
-          <div className="lg:col-span-8 product-card group relative bg-white border border-black/10 p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:border-[#FF5A1F] shadow-xs">
-            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#FF5A1F]" />
+      {/* Full-bleed horizontal track */}
+      <div
+        ref={trackRef}
+        className="flex gap-6 overflow-x-auto px-6 sm:px-10 pb-4 snap-x snap-mandatory scroll-smooth scrollbar-hide"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        data-lenis-prevent
+      >
+        {PRODUCTS.map((product, index) => (
+          <article
+            key={product.id}
+            className="product-slide group relative shrink-0 w-[85vw] sm:w-[420px] lg:w-[460px] snap-start bg-[var(--surface)] overflow-hidden border border-[var(--line)] hover:border-[var(--accent)]/40 transition-colors"
+          >
+            <div className="relative h-56 sm:h-64 overflow-hidden">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                draggable={false}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[var(--ink)]/75 via-[var(--ink)]/15 to-transparent" />
 
-            {/* Top Spec Header */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-black/10 font-mono text-xs">
-              <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 bg-[#FF5A1F] text-white font-black text-[10px] uppercase tracking-wider">
-                  FEATURED
+              {product.featured && (
+                <span className="absolute top-4 left-4 px-3 py-1 bg-[var(--accent)] text-white text-[11px] font-semibold uppercase tracking-wider">
+                  Featured
                 </span>
-                <span className="text-[#FF5A1F] font-bold">{featuredProduct.code}</span>
-              </div>
-              <span className="text-[#4B5563] uppercase tracking-wider text-[11px] font-bold">WARRANTY: 30-YEAR STRUCTURAL</span>
+              )}
+
+              <span className="absolute top-4 right-4 font-mono-tech text-[10px] uppercase tracking-wider text-white/80 bg-black/35 px-2 py-1 backdrop-blur-sm">
+                {String(index + 1).padStart(2, '0')} / {String(PRODUCTS.length).padStart(2, '0')}
+              </span>
+
+              <span className="absolute bottom-4 left-4 font-mono-tech text-[11px] text-white/85">
+                {product.code} · {product.thickness}
+              </span>
             </div>
 
-            {/* Middle Product Showcase Content */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-8 items-center">
-              {/* Product Image Frame */}
-              <div className="relative h-64 sm:h-72 w-full overflow-hidden border border-black/10 bg-[#F1F3F5]">
-                <img
-                  src={featuredProduct.image}
-                  alt={featuredProduct.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                <div className="absolute bottom-3 left-3 px-2 py-1 bg-white/95 border border-black/10 font-mono text-[10px] text-[#111317] font-bold shadow-xs">
-                  {featuredProduct.thickness}
+            <div className="p-5 sm:p-6 flex flex-col min-h-[220px]">
+              <p className="font-mono-tech text-[10px] uppercase tracking-[0.2em] text-[var(--accent)] mb-2">
+                {product.category.replace('-', ' ')}
+              </p>
+              <h3 className="font-heading text-xl sm:text-2xl font-bold uppercase text-[var(--ink)] leading-tight mb-3 group-hover:text-[var(--accent)] transition-colors">
+                {product.name}
+              </h3>
+              <p className="text-sm text-[var(--muted)] leading-relaxed line-clamp-3 mb-auto">
+                {product.tagline}
+              </p>
+
+              <div className="mt-5 pt-4 border-t border-[var(--line)] flex items-center justify-between gap-3">
+                <div className="text-xs">
+                  <p className="text-[var(--muted)] uppercase tracking-wider mb-0.5">Fire</p>
+                  <p className="font-semibold text-[var(--ink)] line-clamp-1">
+                    {product.fireRating.split('/')[0].trim()}
+                  </p>
                 </div>
-              </div>
-
-              {/* Technical Description & Bullet Points */}
-              <div className="flex flex-col">
-                <h3 className="font-heading text-2xl sm:text-3xl font-black uppercase text-[#111317] group-hover:text-[#FF5A1F] transition-colors">
-                  {featuredProduct.name}
-                </h3>
-                <p className="text-xs sm:text-sm text-[#4B5563] mt-2 font-normal leading-relaxed">
-                  {featuredProduct.description}
-                </p>
-
-                {/* Key Spec Readout Tags */}
-                <div className="grid grid-cols-2 gap-2 my-4 pt-4 border-t border-black/10 font-mono text-xs">
-                  <div>
-                    <span className="text-[10px] text-[#4B5563] block uppercase font-bold">FIRE RETARDANCY</span>
-                    <span className="text-[#D97706] font-bold">{featuredProduct.fireRating}</span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] text-[#4B5563] block uppercase font-bold">EFFECTIVE WIDTH</span>
-                    <span className="text-[#111317] font-bold">{featuredProduct.standardWidth}</span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] text-[#4B5563] block uppercase font-bold">PURLIN SPAN</span>
-                    <span className="text-[#111317] font-bold">{featuredProduct.spanCapacity}</span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] text-[#4B5563] block uppercase font-bold">CORROSION TEST</span>
-                    <span className="text-emerald-600 font-bold">100% Acid Immune</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-black/10">
-              <div className="flex items-center gap-2 font-mono text-xs text-[#4B5563] uppercase tracking-wider font-semibold">
-                <Shield className="w-4 h-4 text-[#FF5A1F]" />
-                <span>ASTM E84 CLASS A & ISO 9001 TESTED</span>
-              </div>
-
-              <div className="flex items-center gap-3">
                 <button
-                  onClick={() => onSelectProduct(featuredProduct)}
-                  className="px-6 py-2.5 bg-[#FF5A1F] text-white font-mono text-xs font-black tracking-widest uppercase flex items-center gap-2 hover:bg-[#111317] hover:text-white transition-all interactive-target shadow-[0_0_20px_rgba(255,90,31,0.25)]"
+                  onClick={() => onSelectProduct(product)}
+                  className="inline-flex items-center gap-2 bg-[var(--ink)] text-white px-4 py-2.5 text-sm font-semibold hover:bg-[var(--accent)] transition-colors"
                 >
-                  <span>VIEW FULL SPEC SHEET</span>
+                  View specs
                   <ArrowUpRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
-          </div>
+          </article>
+        ))}
 
-          {/* 2. Right Tall Card: CryoCore Cold Storage PIR Panel (4 cols) */}
-          <div className="lg:col-span-4 product-card group relative bg-white border border-black/10 p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:border-[#0284C7] shadow-xs">
-            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#0284C7]" />
-
-            <div>
-              <div className="flex items-center justify-between pb-3 border-b border-black/10 font-mono text-xs">
-                <span className="text-[#0284C7] font-bold">{secondaryProducts[0].code}</span>
-                <span className="text-[#4B5563] uppercase tracking-wider text-[10px] font-bold">SUB-ZERO -45°C</span>
-              </div>
-
-              <div className="relative h-48 w-full overflow-hidden border border-black/10 bg-[#F1F3F5] my-4">
-                <img
-                  src={secondaryProducts[0].image}
-                  alt={secondaryProducts[0].name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute top-2 right-2 px-2 py-0.5 bg-white/95 border border-[#0284C7] font-mono text-[10px] text-[#0284C7] font-bold shadow-xs">
-                  PIR CORE: 45kg/m³
-                </div>
-              </div>
-
-              <h3 className="font-heading text-xl font-black uppercase text-[#111317] group-hover:text-[#0284C7] transition-colors">
-                {secondaryProducts[0].name}
-              </h3>
-              <p className="text-xs text-[#4B5563] mt-2 font-normal line-clamp-3">
-                {secondaryProducts[0].description}
-              </p>
-
-              <div className="mt-4 pt-3 border-t border-black/10 font-mono text-xs flex flex-col gap-1.5">
-                <div className="flex justify-between">
-                  <span className="text-[#4B5563] uppercase">CONDUCTIVITY:</span>
-                  <span className="text-[#0284C7] font-bold">λ = 0.020 W/m·K</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#4B5563] uppercase">THICKNESS:</span>
-                  <span className="text-[#111317] font-semibold">50mm to 200mm</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#4B5563] uppercase">JOINT SEAL:</span>
-                  <span className="text-emerald-600 font-bold">Cam-Lock Labyrinth</span>
-                </div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => onSelectProduct(secondaryProducts[0])}
-              className="mt-6 w-full py-2.5 bg-[#F8F9FA] border border-[#0284C7] text-[#0284C7] hover:bg-[#0284C7] hover:text-white font-mono text-xs font-black tracking-widest uppercase transition-all flex items-center justify-center gap-2 interactive-target shadow-xs"
-            >
-              <span>EXPLORE PIR COLD PANEL</span>
-              <ArrowUpRight className="w-4 h-4" />
-            </button>
-          </div>
-
-          {/* 3. Bottom Row: 3 Modular Technical Spec Cards (4 cols each) */}
-          {secondaryProducts.slice(1).map((product) => (
-            <div
-              key={product.id}
-              className="lg:col-span-4 product-card group relative bg-white border border-black/10 p-6 flex flex-col justify-between transition-all duration-300 hover:border-[#FF5A1F] shadow-xs"
-            >
-              <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#FF5A1F]" />
-
-              <div>
-                <div className="flex items-center justify-between pb-3 border-b border-black/10 font-mono text-xs">
-                  <span className="text-[#FF5A1F] font-bold">{product.code}</span>
-                  <span className="text-[#4B5563] uppercase tracking-wider text-[10px] font-bold">{product.category}</span>
-                </div>
-
-                <div className="relative h-44 w-full overflow-hidden border border-black/10 bg-[#F1F3F5] my-4">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-white/95 border border-black/10 font-mono text-[10px] text-[#111317] font-bold shadow-xs">
-                    {product.thickness}
-                  </div>
-                </div>
-
-                <h3 className="font-heading text-lg font-black uppercase text-[#111317] group-hover:text-[#FF5A1F] transition-colors">
-                  {product.name}
-                </h3>
-                <p className="text-xs text-[#4B5563] mt-1.5 line-clamp-2">
-                  {product.tagline}
-                </p>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-black/10 flex items-center justify-between">
-                <span className="text-[10px] font-mono text-[#4B5563] uppercase tracking-wider">
-                  FIRE: <strong className="text-[#D97706]">{product.fireRating.split(' ')[0]}</strong>
-                </span>
-                <button
-                  onClick={() => onSelectProduct(product)}
-                  className="text-xs font-mono font-black uppercase tracking-wider text-[#FF5A1F] hover:text-[#111317] flex items-center gap-1 group-hover:translate-x-1 transition-all interactive-target"
-                >
-                  <span>TECH SPECS</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          ))}
+        {/* End CTA card */}
+        <div className="product-slide shrink-0 w-[75vw] sm:w-[360px] snap-start bg-ink-mesh text-white p-8 sm:p-10 flex flex-col justify-center border border-white/10">
+          <p className="font-mono-tech text-[11px] uppercase tracking-[0.25em] text-[var(--accent)] mb-3">
+            Need a custom spec?
+          </p>
+          <h3 className="font-heading text-3xl font-bold uppercase leading-tight mb-4">
+            Get a factory quote
+          </h3>
+          <p className="text-white/60 text-sm mb-8">
+            Tell us your area, thickness, and operating temperature — we’ll respond within 4 hours.
+          </p>
+          <button
+            onClick={onOpenRFQ}
+            className="inline-flex items-center justify-center gap-2 self-start bg-[var(--accent)] text-white px-6 py-3 text-sm font-semibold hover:bg-[var(--accent-deep)] transition-colors"
+          >
+            Request quote
+          </button>
         </div>
+      </div>
+
+      {/* Dot indicators */}
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 mt-8 flex items-center gap-2">
+        {PRODUCTS.map((product, i) => (
+          <button
+            key={product.id}
+            onClick={() => scrollToIndex(i)}
+            className={`h-1 transition-all duration-300 ${
+              i === activeIndex ? 'w-10 bg-[var(--accent)]' : 'w-4 bg-[var(--ink)]/20 hover:bg-[var(--ink)]/40'
+            }`}
+            aria-label={`Go to ${product.name}`}
+          />
+        ))}
       </div>
     </section>
   );

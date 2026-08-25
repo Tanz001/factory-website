@@ -17,26 +17,26 @@ export const CertModal: React.FC<CertModalProps> = ({ cert, onClose }) => {
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-2xl bg-white border border-black/15 p-6 sm:p-10 shadow-2xl text-[#111317] my-8"
+        className="relative w-full max-w-2xl bg-white border border-black/15 p-6 sm:p-10 shadow-2xl text-[var(--ink)] my-8"
         onClick={(e) => e.stopPropagation()}
         style={{
           boxShadow: `0 25px 60px -15px ${cert.sealColor}25`
         }}
       >
-        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#FF5A1F]" />
+        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--accent)]" />
 
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 bg-[#F8F9FA] border border-black/10 hover:border-[#FF5A1F] text-[#4B5563] hover:text-[#111317] transition-all interactive-target shadow-xs"
+          className="absolute top-4 right-4 p-2 bg-[var(--bg)] border border-black/10 hover:border-[var(--accent)] text-[var(--muted)] hover:text-[var(--ink)] transition-all interactive-target shadow-xs"
           aria-label="Close Modal"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Certificate Inspection Header */}
-        <div className="flex items-center gap-3 pb-4 border-b border-black/10 font-mono text-xs text-[#4B5563] uppercase tracking-wider font-semibold">
-          <span className="font-black text-[#111317]">{cert.code}</span>
+        <div className="flex items-center gap-3 pb-4 border-b border-black/10 font-mono text-xs text-[var(--muted)] uppercase tracking-wider font-semibold">
+          <span className="font-black text-[var(--ink)]">{cert.code}</span>
           <span>//</span>
           <span>INDEPENDENT AUDIT VERIFICATION</span>
         </div>
@@ -65,28 +65,28 @@ export const CertModal: React.FC<CertModalProps> = ({ cert, onClose }) => {
             >
               {cert.badge}
             </span>
-            <h2 className="font-heading text-xl sm:text-2xl font-black uppercase text-[#111317] tracking-tight">
+            <h2 className="font-heading text-xl sm:text-2xl font-black uppercase text-[var(--ink)] tracking-tight">
               {cert.title}
             </h2>
-            <p className="text-xs font-mono text-[#4B5563] mt-0.5 uppercase tracking-wider font-semibold">
-              ISSUED BY: <strong className="text-[#111317]">{cert.issuer}</strong>
+            <p className="text-xs font-mono text-[var(--muted)] mt-0.5 uppercase tracking-wider font-semibold">
+              ISSUED BY: <strong className="text-[var(--ink)]">{cert.issuer}</strong>
             </p>
           </div>
         </div>
 
-        <p className="text-sm font-mono text-[#4B5563] leading-relaxed my-4">
+        <p className="text-sm font-mono text-[var(--muted)] leading-relaxed my-4">
           {cert.description}
         </p>
 
         {/* Test Parameters & Audit Evidence */}
-        <div className="my-6 bg-[#F8F9FA] border border-black/10 p-5 font-mono text-xs">
-          <h3 className="font-heading text-xs font-black uppercase tracking-[0.2em] text-[#111317] pb-3 border-b border-black/10">
+        <div className="my-6 bg-[var(--bg)] border border-black/10 p-5 font-mono text-xs">
+          <h3 className="font-heading text-xs font-black uppercase tracking-[0.2em] text-[var(--ink)] pb-3 border-b border-black/10">
             TESTED & AUDITED METRICS:
           </h3>
           <div className="space-y-2.5 mt-3">
             {cert.testedParameters.map((param, idx) => (
               <div key={idx} className="flex justify-between items-center py-1 border-b border-black/5 uppercase tracking-wider">
-                <span className="text-[#4B5563] font-medium">{param.label}</span>
+                <span className="text-[var(--muted)] font-medium">{param.label}</span>
                 <span className="text-emerald-600 font-bold">{param.result}</span>
               </div>
             ))}
@@ -94,14 +94,14 @@ export const CertModal: React.FC<CertModalProps> = ({ cert, onClose }) => {
         </div>
 
         {/* Validity Footer */}
-        <div className="flex items-center justify-between text-xs font-mono text-[#4B5563] pt-4 border-t border-black/10 uppercase tracking-wider font-semibold">
+        <div className="flex items-center justify-between text-xs font-mono text-[var(--muted)] pt-4 border-t border-black/10 uppercase tracking-wider font-semibold">
           <div>
             <span>DATE OF AUDIT: </span>
-            <strong className="text-[#111317]">{cert.issueDate}</strong>
+            <strong className="text-[var(--ink)]">{cert.issueDate}</strong>
           </div>
           <div>
             <span>VALID UNTIL: </span>
-            <strong className="text-[#FF5A1F]">{cert.validThrough}</strong>
+            <strong className="text-[var(--accent)]">{cert.validThrough}</strong>
           </div>
         </div>
 
@@ -111,7 +111,7 @@ export const CertModal: React.FC<CertModalProps> = ({ cert, onClose }) => {
             onClick={() => {
               alert(`Downloading full certified audit report for ${cert.title}`);
             }}
-            className="px-5 py-2.5 bg-[#FF5A1F] text-white font-mono text-xs font-black tracking-widest uppercase flex items-center gap-2 hover:bg-[#111317] transition-all interactive-target shadow-md"
+            className="px-5 py-2.5 bg-[var(--accent)] text-white font-mono text-xs font-black tracking-widest uppercase flex items-center gap-2 hover:bg-[var(--ink)] transition-all interactive-target shadow-md"
           >
             <Download className="w-4 h-4" />
             <span>DOWNLOAD AUDIT DOCUMENT</span>

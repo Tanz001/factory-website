@@ -77,7 +77,7 @@ export default function App() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#F8F9FA] text-[#111317] overflow-x-hidden selection:bg-[#FF5A1F] selection:text-white">
+    <div className="relative min-h-screen bg-[var(--bg)] text-[var(--ink)] overflow-x-hidden selection:bg-[var(--accent)] selection:text-white">
       {/* Precision Reticle Crosshair Cursor on Desktop */}
       <CustomCursor />
 

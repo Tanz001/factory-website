@@ -2,22 +2,22 @@ import { Product, MetricItem, Certificate, Testimonial } from '../types';
 
 export const HERO_IMAGES = [
   {
-    url: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=2000&q=85',
-    title: 'CONTINUOUS EXTRUSION FACILITY',
-    sub: 'LINE-01 // AUTOMATED HIGH-SPEED THERMAL FORMING',
+    url: 'https://images.unsplash.com/photo-1644065172790-1dd8212bd47f?auto=format&fit=crop&w=2400&q=85',
+    title: 'CORRUGATED ROOFING SHEETS',
+    sub: 'LINE-01 // UPVC & PROFILE SHEET PRODUCTION',
     code: 'PLANT-ALPHA-01'
   },
   {
-    url: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=2000&q=85',
-    title: 'HIGH-PRESSURE PIR INJECTION BAY',
-    sub: 'LINE-04 // ROBOTIC POLYURETHANE DISPERSION',
-    code: 'PIR-CORE-PRESS'
+    url: 'https://images.unsplash.com/photo-1637035640168-ff7dad2852f8?auto=format&fit=crop&w=2400&q=85',
+    title: 'INDUSTRIAL ROOF INSTALLATIONS',
+    sub: 'FIELD-02 // LARGE-SPAN UPVC ROOF SYSTEMS',
+    code: 'SITE-ROOF-02'
   },
   {
-    url: 'https://images.unsplash.com/photo-1565793298595-6a879b1d9492?auto=format&fit=crop&w=2000&q=85',
-    title: 'COLD-STORAGE TESTING & STAGING',
-    sub: 'FACILITY-02 // SUB-ZERO -45°C THERMAL CHAMBER',
-    code: 'STAGING-BAY-03'
+    url: 'https://images.unsplash.com/photo-1727670404457-9c5497d58fad?auto=format&fit=crop&w=2400&q=85',
+    title: 'UPVC CLADDING & SHADE SHEETS',
+    sub: 'FACILITY-03 // WALL PROFILES & INDUSTRIAL SHADES',
+    code: 'CLAD-BAY-03'
   }
 ];
 
@@ -64,7 +64,7 @@ export const PRODUCTS: Product[] = [
     category: 'upvc',
     tagline: 'Heavy-duty acid, alkali, and marine corrosion resistant roofing with ASA UV armor.',
     description: 'Engineered specifically for harsh chemical environments, electroplating plants, fertilizer factories, and coastal warehouses. Features an outer co-extruded Geloy ASA shield that deflects 99.4% of ultraviolet radiation and resists thermal degradation.',
-    image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1644065172790-1dd8212bd47f?auto=format&fit=crop&w=1400&q=80',
     thickness: '2.0mm / 2.5mm / 3.0mm',
     standardWidth: '1070mm (Effective 1000mm)',
     thermalRating: 'R-Value 0.48 m²·K/W',
@@ -93,7 +93,7 @@ export const PRODUCTS: Product[] = [
     category: 'cold-storage',
     tagline: 'Ultra-low thermal conductivity Polyisocyanurate (PIR) core with airtight cam-lock system.',
     description: 'High-density polyisocyanurate (PIR) continuous sandwich panel designed for controlled atmosphere cold rooms, pharmaceutical vaccine depots, and blast freezers operating down to -45°C. Features automated tongue-and-groove jointing with pre-installed elastomeric thermal gaskets.',
-    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1400&q=80',
     thickness: '50mm / 75mm / 100mm / 150mm / 200mm',
     standardWidth: '1000mm / 1150mm',
     thermalRating: 'λ = 0.020 W/m·K (Superior R-8.2 per inch)',
@@ -122,7 +122,7 @@ export const PRODUCTS: Product[] = [
     category: 'upvc',
     tagline: 'Multi-chamber acoustic & thermal hollow wall panel for aggressive industrial atmospheres.',
     description: 'Continuous extruded multi-cell hollow panel profile providing structural rigidity with minimized deadweight. Ideal for internal partitions, ceiling panels, and exterior cladding in wash-down sanitary zones and chemical testing facilities.',
-    image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1727670404457-9c5497d58fad?auto=format&fit=crop&w=1400&q=80',
     thickness: '10mm / 15mm / 18mm / 20mm',
     standardWidth: '500mm / 600mm',
     thermalRating: 'K-Value 2.8 W/m²·K',
@@ -151,7 +151,7 @@ export const PRODUCTS: Product[] = [
     category: 'cold-storage',
     tagline: 'Heated perimeter gasket sliding portal with automatic infrared safety sensor.',
     description: 'Industrial heavy-duty sliding and hinged doors built with 120mm continuous PIR injection and 304 grade stainless steel frame. Integrated 230V frost-prevention heating cables ensure gasket elasticity even during non-stop blast freezing.',
-    image: 'https://images.unsplash.com/photo-1590247813693-5541d1c609fd?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1590247813693-5541d1c609fd?auto=format&fit=crop&w=1400&q=80',
     thickness: '100mm / 120mm / 150mm',
     standardWidth: 'Custom openings up to 4000mm x 4500mm',
     thermalRating: 'U-Value 0.22 W/m²·K',
@@ -177,15 +177,15 @@ export const PRODUCTS: Product[] = [
     name: 'LuxGuard™ Multiwall Polycarbonate Daylighting Panel',
     category: 'polycarbonate',
     tagline: 'Co-extruded UV-blocking daylighting profile engineered to interlock seamlessly with UPVC sheets.',
-    description: 'Custom corrugated and trapezoidal profile matching KINETIC UPVC roofing for zero-leakage natural lighting integration. Delivers 82% natural light transmission while blocking 99.9% of harmful solar radiation.',
-    image: 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?auto=format&fit=crop&w=1200&q=80',
+    description: 'Custom corrugated and trapezoidal profile matching SN Star UPVC roofing for zero-leakage natural lighting integration. Delivers 82% natural light transmission while blocking 99.9% of harmful solar radiation.',
+    image: 'https://images.unsplash.com/photo-1416879595882-3373aac70315?auto=format&fit=crop&w=1400&q=80',
     thickness: '1.2mm / 1.5mm / 2.0mm / 2.5mm',
     standardWidth: '1070mm',
     thermalRating: 'UV400 Surface Protection',
     fireRating: 'Class B1 (DIN 4102)',
     spanCapacity: '1200mm Purlin Span',
     features: [
-      'Profile-matched to KINETIC UPVC corrugated patterns',
+      'Profile-matched to SN Star UPVC corrugated patterns',
       'Exceptional impact resistance: 250x stronger than annealed glass',
       'Anti-drip internal coating prevents condensation drop damage',
       'Light diffusion reduces interior factory glare and cooling loads'
@@ -210,7 +210,7 @@ export const CERTIFICATIONS: Certificate[] = [
     issueDate: '2018-04-12',
     validThrough: '2027-04-11',
     description: 'Full lifecycle quality oversight covering raw polymer spectroscopy, continuous infrared foam monitoring, and robotic CNC dimension tolerances.',
-    sealColor: '#FF5A1F',
+    sealColor: '#148A80',
     badge: 'QUALITY RECOGNIZED',
     testedParameters: [
       { label: 'Raw Resin Purity Check', result: '99.98% Monomer Integrity' },
@@ -227,7 +227,7 @@ export const CERTIFICATIONS: Certificate[] = [
     issueDate: '2020-09-15',
     validThrough: '2028-09-14',
     description: 'Steiner Tunnel fire propagation inspection verifying flame spread index < 25 and smoke development rating < 50 for PIR cores and UPVC sheets.',
-    sealColor: '#FFB627',
+    sealColor: '#B8956C',
     badge: 'CLASS A FIRE RATED',
     testedParameters: [
       { label: 'Flame Spread Index (FSI)', result: '18 (Class A ≤ 25)' },
@@ -261,7 +261,7 @@ export const CERTIFICATIONS: Certificate[] = [
     issueDate: '2021-02-18',
     validThrough: '2029-02-17',
     description: 'Rigorous full-scale corner test verification for unlimited height installations without sprinkler suppression in cold warehouse rooms.',
-    sealColor: '#FF5A1F',
+    sealColor: '#148A80',
     badge: 'FM APPROVED',
     testedParameters: [
       { label: '16-Foot Corner Test', result: 'Passed — Zero Flashover' },
@@ -312,7 +312,7 @@ export const CERTIFICATIONS: Certificate[] = [
     issueDate: '2021-08-30',
     validThrough: '2029-08-29',
     description: 'Earns up to 14 points on industrial LEED v4 projects through superior thermal resistance, Solar Reflectance Index (SRI > 82), and non-emitting materials.',
-    sealColor: '#FFB627',
+    sealColor: '#B8956C',
     badge: 'LEED V4 QUALIFIED',
     testedParameters: [
       { label: 'Solar Reflectance Index (SRI)', result: '86.4 (High Albedo)' },
@@ -325,7 +325,7 @@ export const CERTIFICATIONS: Certificate[] = [
 export const TESTIMONIALS: Testimonial[] = [
   {
     id: 'test-01',
-    quote: "We installed 140,000 square feet of KINETIC Tri-Shield UPVC panels across our sulfuric acid processing bay. Four years later in a 90% humidity corrosive zone, there is literally zero rust, zero chalking, and our internal ambient temperature dropped by 7.5°C.",
+    quote: "We installed 140,000 square feet of SN Star Tri-Shield UPVC panels across our sulfuric acid processing bay. Four years later in a 90% humidity corrosive zone, there is literally zero rust, zero chalking, and our internal ambient temperature dropped by 7.5°C.",
     author: "Eng. Marcus Vance",
     role: "Chief Facilities Director",
     company: "Apex Chemical & Petrochemical Ltd.",
@@ -337,7 +337,7 @@ export const TESTIMONIALS: Testimonial[] = [
   },
   {
     id: 'test-02',
-    quote: "For our -32°C automated ice cream and pharmaceutical cold hub, thermal integrity is non-negotiable. KINETIC's 150mm CryoCore PIR panels with cam-lock tongue and groove gave us air tightness benchmarks that exceeded our FM Global Tier-1 inspection with zero thermal bridge losses.",
+    quote: "For our -32°C automated ice cream and pharmaceutical cold hub, thermal integrity is non-negotiable. SN Star's 150mm CryoCore PIR panels with cam-lock tongue and groove gave us air tightness benchmarks that exceeded our FM Global Tier-1 inspection with zero thermal bridge losses.",
     author: "Elena Rostova",
     role: "VP of Cold Chain Logistics",
     company: "Nordic Frost Logistics Global",
@@ -349,7 +349,7 @@ export const TESTIMONIALS: Testimonial[] = [
   },
   {
     id: 'test-03',
-    quote: "When we replaced traditional metal deck roofing with KINETIC 3-layer UPVC in our coastal fertilizer warehouse, our replacement and paint maintenance budget dropped to zero. The acoustic reduction during torrential monsoon rains also dramatically improved plant floor safety.",
+    quote: "When we replaced traditional metal deck roofing with SN Star 3-layer UPVC in our coastal fertilizer warehouse, our replacement and paint maintenance budget dropped to zero. The acoustic reduction during torrential monsoon rains also dramatically improved plant floor safety.",
     author: "David Chen",
     role: "Head of Plant Engineering",
     company: "Pacific Agro Chemicals Group",
